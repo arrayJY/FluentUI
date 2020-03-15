@@ -1,6 +1,6 @@
 #pragma once
 #include <list>
-#include "../3rdparty/glfw/include/GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 
 namespace skiaui
 {

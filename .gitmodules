@@ -1,6 +1,6 @@
-[submodule "3rdparty/skia"]
-	path = 3rdparty/skia
+[submodule "FluentUI/3rdparty/skia"]
+	path = FluentUI/3rdparty/skia
 	url = https://github.com/google/skia.git
-[submodule "3rdparty/glfw"]
-	path = 3rdparty/glfw
-	url = https://github.com/glfw/glfw
+[submodule "FluentUI/3rdparty/glfw"]
+	path = FluentUI/3rdparty/glfw
+	url = https://github.com/glfw/glfw.git
