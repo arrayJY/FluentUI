@@ -4,3 +4,6 @@
 [submodule "FluentUI/3rdparty/glfw"]
 	path = FluentUI/3rdparty/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "FluentUI/3rdparty/googletest"]
+	path = FluentUI/3rdparty/googletest
+	url = https://github.com/google/googletest.git
