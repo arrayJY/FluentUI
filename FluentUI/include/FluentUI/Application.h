@@ -2,26 +2,20 @@
 #include <list>
 #include <GLFW/glfw3.h>
 
-namespace skiaui
+namespace Fluentui
 {
+	class Widget;
 	class Application
 	{
 	public:
-		static Application& instance()
-		{ 
-			static Application __instance;
-			return __instance; 
-		}
+		Application();
 		void exec();
-	private:
-		//Singleton pattern, disable constructors.
-		Application()
-		{
-			initGLFW();
-		}
-		Application(const Application&);
+		static void addPrimaryWindow(Widget*);
 
+	private:
 		void initGLFW();
+		//Widget having no parent
+		static std::list<Widget*> primaryWindows;
 	};
 }
 
