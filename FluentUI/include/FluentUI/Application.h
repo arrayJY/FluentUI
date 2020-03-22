@@ -9,7 +9,7 @@ namespace Fluentui
 	{
 	public:
 		Application();
-		void exec();
+		int exec();
 		static void addPrimaryWindow(Widget*);
 
 	private:

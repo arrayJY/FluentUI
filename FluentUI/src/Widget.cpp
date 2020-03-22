@@ -12,7 +12,7 @@ Fluentui::Widget::Widget(Widget* parent)
 	: gackgroundColor(SK_ColorWHITE),
 	  context(nullptr), surface(nullptr),
 	  width(WINDOW_DEFAULT_WIDTH), height(WINDOW_DEFAULT_HEIGHT),
-	  parent(nullptr)
+	  parent(parent)
 {
 	//Create glfw window
 	{
@@ -60,8 +60,7 @@ Fluentui::Widget::Widget(Widget* parent)
 		}
 		else
 		{
-			this->parent = parent;
-			this->parent->children.push_back(std::shared_ptr<Widget>(this));
+			parent->children.push_back(std::shared_ptr<Widget>(this));
 		}
 	}
 }

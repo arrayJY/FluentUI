@@ -1,11 +1,12 @@
 #include <FluentUI/Application.h>
 #include <FluentUI/Widget.h>
 
+std::list<Fluentui::Widget*> Fluentui::Application::primaryWindows;
+
 Fluentui::Application::Application()
 {
 	initGLFW();
 }
-
 
 void Fluentui::Application::initGLFW()
 {
@@ -19,23 +20,31 @@ void Fluentui::Application::initGLFW()
 	glfwSwapInterval(1);
 }
 
-void Fluentui::Application::exec()
+int Fluentui::Application::exec()
 {
-	while (!primaryWindows.empty())
+	try
 	{
-		for (auto i = primaryWindows.begin(); i != primaryWindows.end(); )
+		while (!primaryWindows.empty())
 		{
-			auto widget = *i;
-			//Render every primary windows.
-			widget->render();
-			//Remove window from list if it should close.
-			if (widget->shouldClose())
-				i = primaryWindows.erase(i);
-			else
-				i++;
+			for (auto i = primaryWindows.begin(); i != primaryWindows.end(); )
+			{
+				auto widget = *i;
+				//Render every primary windows.
+				widget->render();
+				//Remove window from list if it should close.
+				if (widget->shouldClose())
+					i = primaryWindows.erase(i);
+				else
+					i++;
+			}
+			glfwWaitEvents();
 		}
-		glfwWaitEvents();
 	}
+	catch(std::runtime_error&)
+	{
+		return -1;
+	}
+	return 0;
 }
 
 void Fluentui::Application::addPrimaryWindow(Widget* window)
