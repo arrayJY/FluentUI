@@ -18,7 +18,7 @@ namespace Fluentui
 
 	public:
 		Widget(Widget* parent = nullptr);
-		virtual ~Widget();
+		virtual ~Widget() = default;
 
 		void show();
 		void hide();
@@ -26,12 +26,17 @@ namespace Fluentui
 		void render();
 		bool shouldClose();
 
+		void setPos(int x, int y);
+		const int x();
+		const int y();
+
 	protected:
 		virtual void draw(SkCanvas*);
 		Widget* parent;
 		std::list<std::shared_ptr<Widget>> children;
 	private:
 		int width, height;
+		int posX, posY;
 		SkColor gackgroundColor;
 	};
 }

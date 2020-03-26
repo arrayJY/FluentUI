@@ -5,7 +5,7 @@
 
 Fluentui::Widget::Widget(Widget* parent)
 	: gackgroundColor(SK_ColorWHITE),
-	  width(WINDOW_DEFAULT_WIDTH), height(WINDOW_DEFAULT_HEIGHT),
+	  width(WINDOW_DEFAULT_WIDTH), height(WINDOW_DEFAULT_HEIGHT), x(0), y(0),
 	  glfwContext(nullptr), skiaContext(nullptr), 
 	  parent(parent)
 {
@@ -57,3 +57,12 @@ void Fluentui::Widget::show() { glfwContext->show(); }
 void Fluentui::Widget::hide() { glfwContext->hide(); }
 void Fluentui::Widget::close() { glfwContext->close(); }
 bool Fluentui::Widget::shouldClose() { return glfwContext->shouldClose(); }
+
+void Fluentui::Widget::setPos(int x, int y)
+{
+	x = (parent ? x + parent->x() : x);
+	y = (parent ? y + parent->y() : y);
+}
+
+const int Fluentui::Widget::x() { return posX; }
+const int Fluentui::Widget::y() { return posY; }
