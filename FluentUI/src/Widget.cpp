@@ -5,7 +5,7 @@
 
 Fluentui::Widget::Widget(Widget* parent)
 	: gackgroundColor(SK_ColorWHITE),
-	  width(WINDOW_DEFAULT_WIDTH), height(WINDOW_DEFAULT_HEIGHT), x(0), y(0),
+	  width(WINDOW_DEFAULT_WIDTH), height(WINDOW_DEFAULT_HEIGHT), relativeX(0), relativeY(0),
 	  glfwContext(nullptr), skiaContext(nullptr), 
 	  parent(parent)
 {
@@ -32,7 +32,7 @@ Fluentui::Widget::Widget(Widget* parent)
 	}
 }
 
-void Fluentui::Widget::draw(SkCanvas* canvas)
+void Fluentui::Widget::draw(SkCanvas* canvas, int offsetX, int offsetY)
 {
 	//Draw background
 	SkPaint paint;
@@ -43,26 +43,32 @@ void Fluentui::Widget::draw(SkCanvas* canvas)
 void Fluentui::Widget::render()
 {
 	//Draw itself
-	draw(skiaContext->getCanvas());
+	SkCanvas* canvas = skiaContext->getCanvas();
+	draw(canvas, absoluteX(), absoluteY());
 	//Draw children
 	for (const auto& i : children)
 	{
-		i->draw(skiaContext->getCanvas());
+		i->render(canvas, absoluteX(), absoluteY());
 	}
 	skiaContext->flush();
 	glfwContext->swapBuffer();
+}
+
+void Fluentui::Widget::render(SkCanvas* canvas, const int offsetX, const int offsetY)
+{
+	draw(canvas, offsetX, offsetY);
+	for (const auto& i : children)
+	{
+		i->render(canvas, offsetX + x(), offsetX + y());
+	}
 }
 
 void Fluentui::Widget::show() { glfwContext->show(); }
 void Fluentui::Widget::hide() { glfwContext->hide(); }
 void Fluentui::Widget::close() { glfwContext->close(); }
 bool Fluentui::Widget::shouldClose() { return glfwContext->shouldClose(); }
-
-void Fluentui::Widget::setPos(int x, int y)
-{
-	x = (parent ? x + parent->x() : x);
-	y = (parent ? y + parent->y() : y);
-}
-
-const int Fluentui::Widget::x() { return posX; }
-const int Fluentui::Widget::y() { return posY; }
+void Fluentui::Widget::setPos(int x, int y) { relativeX = x, relativeY = y; }
+const int Fluentui::Widget::x() { return relativeX; }
+const int Fluentui::Widget::y() { return relativeY; }
+const int Fluentui::Widget::absoluteX() { return parent ? relativeX + parent->x() : relativeX; }
+const int Fluentui::Widget::absoluteY() { return parent ? relativeY + parent->y() : relativeY; }

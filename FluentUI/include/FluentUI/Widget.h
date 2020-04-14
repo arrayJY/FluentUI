@@ -11,7 +11,7 @@ namespace Fluentui
 	static const int WINDOW_DEFAULT_HEIGHT = 480;
 	class Widget
 	{
-	private:
+	protected:
 		// Definition in advance for RAII. 
 		std::unique_ptr<WidgetGLFWContext> glfwContext;
 		std::unique_ptr<WidgetSkiaContext> skiaContext;
@@ -31,12 +31,18 @@ namespace Fluentui
 		const int y();
 
 	protected:
-		virtual void draw(SkCanvas*);
+		void render(SkCanvas*, int offsetX, int offsetY);
+		virtual void draw(SkCanvas*, int offsetX, int offsetY);
+
 		Widget* parent;
 		std::list<std::shared_ptr<Widget>> children;
+
 	private:
+		const int absoluteX();
+		const int absoluteY();
+		int relativeX, relativeY;
+
 		int width, height;
-		int posX, posY;
 		SkColor gackgroundColor;
 	};
 }
