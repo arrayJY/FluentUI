@@ -11,7 +11,7 @@ namespace Fluentui
 	class Label : public Widget
 	{
 	public:
-		Label(const char*, Widget* parent);
+		Label(const char*, Widget* parent = nullptr);
 		~Label() = default;
 		void setFont(const char*);
 		void setText(const char*);
@@ -21,7 +21,7 @@ namespace Fluentui
 		void draw(SkCanvas*, int offsetX, int offsetY);
 
 	private:
-		int relativeX, relativeY;
+		void resize();
 		Font font;
 		std::string text;
 		size_t size;

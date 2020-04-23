@@ -1,12 +1,19 @@
 #include <FluentUI/Application.h>
 #include <FluentUI/Widget.h>
 #include <include/core/SkColor.h>
+#include <include/core/SkColorSpace.h>
 #include <include/core/SkCanvas.h>
+#include <include/core/SkSurface.h>
+#include <include/gpu/GrContext.h>
+#include <include/gpu/GrBackendSurface.h>
+#include <include/gpu/gl/GrGLInterface.h>
+using namespace Fluentui;
 
-Fluentui::Widget::Widget(Widget* parent)
-	: gackgroundColor(SK_ColorWHITE),
-	  width(WINDOW_DEFAULT_WIDTH), height(WINDOW_DEFAULT_HEIGHT), relativeX(0), relativeY(0),
-	  glfwContext(nullptr), skiaContext(nullptr), 
+Widget::Widget(Widget* parent)
+	: __gackgroundColor(SK_ColorWHITE),
+	__width(0), __height(0), __x(0), __y(0),
+	__glfwContext(nullptr), __skiaContext(nullptr),
+	__visible(false),
 	  parent(parent)
 {
 	/*
@@ -21,54 +28,116 @@ Fluentui::Widget::Widget(Widget* parent)
 		else
 		{
 			parent->children.push_back(std::shared_ptr<Widget>(this));
-			//Prevent child widget from creating another window
-			return;
+			return;		//Prevent child widget from creating another window
 		}
 	}
 	//Init GLFW and skia context.
-	{
-		glfwContext = std::make_unique<WidgetGLFWContext>(width, height);
-		skiaContext = std::make_unique<WidgetSkiaContext>(width, height);
-	}
+	__width = WINDOW_DEFAULT_WIDTH, __height = WINDOW_DEFAULT_HEIGHT;
+	__glfwContext = std::make_unique<WindowGLFWContext>(__width, __height);
+	__skiaContext = std::make_unique<WindowSkiaContext>(__width, __height);
 }
 
-void Fluentui::Widget::draw(SkCanvas* canvas, int offsetX, int offsetY)
+void Widget::draw(SkCanvas* canvas, int offsetX, int offsetY)
 {
 	//Draw background
 	SkPaint paint;
-	paint.setColor(gackgroundColor);
+	paint.setColor(__gackgroundColor);
 	canvas->drawPaint(paint);
 }
 
-void Fluentui::Widget::render()
+void Widget::render(SkCanvas* canvas, const int offsetX, const int offsetY)
 {
-	//Draw itself
-	SkCanvas* canvas = skiaContext->getCanvas();
-	draw(canvas, absoluteX(), absoluteY());
-	//Draw children
-	for (const auto& i : children)
-	{
-		i->render(canvas, absoluteX(), absoluteY());
-	}
-	skiaContext->flush();
-	glfwContext->swapBuffer();
-}
-
-void Fluentui::Widget::render(SkCanvas* canvas, const int offsetX, const int offsetY)
-{
+	if (!isVisible())
+		return;
+	//Draw itself;
 	draw(canvas, offsetX, offsetY);
+	//Draw children
 	for (const auto& i : children)
 	{
 		i->render(canvas, offsetX + x(), offsetX + y());
 	}
 }
 
-void Fluentui::Widget::show() { glfwContext->show(); }
-void Fluentui::Widget::hide() { glfwContext->hide(); }
-void Fluentui::Widget::close() { glfwContext->close(); }
-bool Fluentui::Widget::shouldClose() { return glfwContext->shouldClose(); }
-void Fluentui::Widget::setPos(int x, int y) { relativeX = x, relativeY = y; }
-const int Fluentui::Widget::x() { return relativeX; }
-const int Fluentui::Widget::y() { return relativeY; }
-const int Fluentui::Widget::absoluteX() { return parent ? relativeX + parent->x() : relativeX; }
-const int Fluentui::Widget::absoluteY() { return parent ? relativeY + parent->y() : relativeY; }
+void Widget::show() { setVisible(true); }
+void Widget::hide() { setVisible(false); }
+void Widget::close() { __visible = true; }
+
+void Widget::setPos(int x, int y) { __x = x, __y = y; }
+void Widget::setVisible(bool visible)
+{
+	__visible = visible;
+	for (const auto& i : children)
+	{
+		i->setVisible(visible);
+	}
+}
+void Widget::setRect(int width, int height)
+{
+	__width = width, __height = height;
+	if (!parent)
+	{
+		__glfwContext->setSize(width, height);
+	}
+}
+
+int Widget::x() const { return __x; }
+int Widget::y() const { return __y; }
+bool Widget::isVisible() const { return __visible; }
+int Widget::width() const { return __width; }
+int Widget::height() const { return __height; }
+
+Widget::WindowGLFWContext::WindowGLFWContext(int width, int height)
+{
+	//Create glfw window
+	if (!(__window = glfwCreateWindow(width, height, "FluentUI", nullptr, nullptr)))
+	{
+		throw std::runtime_error("Create window failed.");
+	}
+	//Create glfw context
+	glfwMakeContextCurrent(__window);
+}
+
+Widget::WindowGLFWContext::~WindowGLFWContext()
+{
+	glfwDestroyWindow(__window);
+}
+
+void Widget::WindowGLFWContext::show() { glfwShowWindow(__window); }
+void Widget::WindowGLFWContext::hide() { glfwHideWindow(__window); }
+void Widget::WindowGLFWContext::swapBuffer() { glfwSwapBuffers(__window); }
+void Widget::WindowGLFWContext::close() { glfwSetWindowShouldClose(__window, 1); }
+bool Widget::WindowGLFWContext::shouldClose() { return glfwWindowShouldClose(__window); }
+GLFWwindow* Widget::WindowGLFWContext::getGLFWWindow() { return __window; }
+
+void Widget::WindowGLFWContext::setSize(int width, int height) { glfwSetWindowSize(__window, width, height); }
+
+Widget::WindowSkiaContext::WindowSkiaContext(int width, int height)
+	: __width(width), __height(height),
+	  __context(nullptr), __surface(nullptr)
+{
+	//Create skia OpenGL context
+	{
+		GrContextOptions options;
+		if (!(__context = GrContext::MakeGL(nullptr, options)))
+		{
+			throw std::runtime_error("Create window context failed.");
+		}
+	}
+	//Create skia surface
+	{
+		GrGLFramebufferInfo framebufferInfo;
+		framebufferInfo.fFBOID = 0;
+		framebufferInfo.fFormat = GL_RGBA8;
+
+		SkColorType colorType = kRGBA_8888_SkColorType;
+
+		GrBackendRenderTarget backendRenderTarget(width, height, 0, 0, framebufferInfo);
+
+		if (!(__surface = SkSurface::MakeFromBackendRenderTarget(__context.get(), backendRenderTarget, kBottomLeft_GrSurfaceOrigin, colorType, nullptr, nullptr)))
+		{
+			throw std::runtime_error("Create window surface failed.");
+		}
+	}
+}
+SkCanvas* Widget::WindowSkiaContext::getCanvas() { return __surface->getCanvas(); }
+void Widget::WindowSkiaContext::flush() { __context->flush(); }
