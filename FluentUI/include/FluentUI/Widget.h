@@ -59,6 +59,8 @@ namespace Fluentui
 		void hide();
 		void close();
 		void render(SkCanvas*, int offsetX, int offsetY);
+		void event(Event*);
+
 
 		void setVisible(bool visible);
 		void setPos(int x, int y);
@@ -73,7 +75,12 @@ namespace Fluentui
 	protected:
 		virtual void draw(SkCanvas*, int offsetX, int offsetY);
 
-		Widget* parent;
+		virtual void mouseMoveEvent(MouseEvent*);
+		virtual void enterEvent(Event*);
+		virtual void leaveEvent(Event*);
+		virtual void mousePressEvent(MouseEvent*);
+		virtual void mouseReleaseEvent(MouseEvent*);
+
 		std::list<std::shared_ptr<Widget>> children;
 
 	private:
@@ -81,6 +88,7 @@ namespace Fluentui
 		int __width, __height;
 		bool __visible;
 		SkColor __gackgroundColor;
+		Widget* parent;
 
 		friend class Application;
 	};

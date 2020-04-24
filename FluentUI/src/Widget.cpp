@@ -1,5 +1,6 @@
 #include <FluentUI/Application.h>
 #include <FluentUI/Widget.h>
+#include <FluentUI/MouseEvent.h>
 #include <include/core/SkColor.h>
 #include <include/core/SkColorSpace.h>
 #include <include/core/SkCanvas.h>
@@ -61,6 +62,29 @@ void Widget::render(SkCanvas* canvas, const int offsetX, const int offsetY)
 void Widget::show() { setVisible(true); }
 void Widget::hide() { setVisible(false); }
 void Widget::close() { __visible = true; }
+void Widget::event(Event* event)
+{
+	switch (event->type())
+	{
+	case Event::Type::MouseMove:
+		mouseMoveEvent(static_cast<MouseEvent*>(event));
+		break;
+	case Event::Type::Enter:
+		enterEvent(event);
+		break;
+	case Event::Type::Leave:
+		leaveEvent(event);
+		break;
+	case Event::Type::MousePress:
+		mousePressEvent(static_cast<MouseEvent*>(event));
+		break;
+	case Event::Type::MouseRelease:
+		mouseReleaseEvent(static_cast<MouseEvent*>(event));
+		break;
+	default:
+		return;
+	}
+};
 
 void Widget::setPos(int x, int y) { __x = x, __y = y; }
 void Widget::setVisible(bool visible)
@@ -85,6 +109,14 @@ int Widget::y() const { return __y; }
 bool Widget::isVisible() const { return __visible; }
 int Widget::width() const { return __width; }
 int Widget::height() const { return __height; }
+
+void Widget::mouseMoveEvent(MouseEvent*) { }
+void Widget::enterEvent(Event*) { }
+void Widget::leaveEvent(Event*) { }
+void Widget::mousePressEvent(MouseEvent*) { }
+void Widget::mouseReleaseEvent(MouseEvent*) { }
+
+/************************ Proxy Class *************************/
 
 Widget::WindowGLFWContext::WindowGLFWContext(int width, int height)
 {
