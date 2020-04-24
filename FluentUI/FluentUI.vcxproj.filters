@@ -21,12 +21,39 @@
     <ClInclude Include="include\FluentUI\Widget.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\FluentUI\Label.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FluentUI\Font.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FluentUI\Button.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FluentUI\Event.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FluentUI\MouseEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\Widget.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Label.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Font.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Button.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -12,7 +12,7 @@ namespace Fluentui
 		void setFont(const char* fontFamily = nullptr, size_t size = DEFAULT_SIZE);
 		void setSize(size_t size = DEFAULT_SIZE);
 
-		static const size_t DEFAULT_SIZE = 12;
+		static const size_t DEFAULT_SIZE = 13;
 
 	private:
 		sk_sp<SkFontMgr> fontManager;
