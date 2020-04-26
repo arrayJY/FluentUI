@@ -2,6 +2,7 @@
 #include <FluentUI/Widget.h>
 #include <FluentUI/MouseEvent.h>
 #include <FluentUI/InputEvent.h>
+#include <FluentUI/KeyEvent.h>
 #include <include/core/SkColor.h>
 #include <include/core/SkColorSpace.h>
 #include <include/core/SkCanvas.h>
@@ -85,6 +86,10 @@ void Widget::event(Event* event)
 	case Event::Type::Input:
 		inputEvent(static_cast<InputEvent*>(event));
 		break;
+	case Event::Type::KeyPress:
+		keyPressEvent(static_cast<KeyEvent*>(event));
+	case Event::Type::KeyRelease:
+		keyReleaseEvent(static_cast<KeyEvent*>(event));
 	default:
 		return;
 	}
@@ -125,6 +130,8 @@ void Widget::leaveEvent(Event*) { }
 void Widget::mousePressEvent(MouseEvent*) { }
 void Widget::mouseReleaseEvent(MouseEvent*) { }
 void Widget::inputEvent(InputEvent*) { }
+void Widget::keyPressEvent(KeyEvent*) { }
+void Widget::keyReleaseEvent(KeyEvent*) { }
 
 /************************ Proxy Class *************************/
 

@@ -7,9 +7,9 @@ namespace Fluentui
 	class InputEvent : public Event
 	{
 	public:
-		InputEvent(Event::Type t, const std::u8string_view str) : Event(t) { __inputString = str; }
-		const std::u8string& inputString() { return __inputString; }
+		InputEvent(Event::Type t, char32_t ch) : Event(t) { __inputText = ch; }
+		const char32_t inputText() { return __inputText; }
 	private:
-		std::u8string __inputString;
+		char32_t __inputText;
 	};
 }

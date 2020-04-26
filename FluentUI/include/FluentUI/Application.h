@@ -10,6 +10,7 @@ namespace Fluentui
 	class Event;
 	class MouseEvent;
 	class InputEvent;
+	class KeyEvent;
 	enum class Event::Type;
 	enum class MouseEvent::MouseButton;
 	class Application
@@ -22,6 +23,7 @@ namespace Fluentui
 		static void sendEvent(Widget* recevier, Event* event);
 		static void processMouseEvent(Widget*, MouseEvent*);
 		static void processMouseButtonEvent(Widget*, MouseEvent*);
+		static void processKeyEvent(Widget*, KeyEvent*);
 		static void processInputEvent(Widget*, InputEvent*);
 
 		static void setMousePos(int x, int y);

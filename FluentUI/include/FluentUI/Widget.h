@@ -13,6 +13,7 @@ namespace Fluentui
 	class Event;
 	class MouseEvent;
 	class InputEvent;
+	class KeyEvent;
 	class Widget
 	{
 	public:
@@ -87,6 +88,8 @@ namespace Fluentui
 		virtual void mousePressEvent(MouseEvent*);
 		virtual void mouseReleaseEvent(MouseEvent*);
 		virtual void inputEvent(InputEvent*);
+		virtual void keyPressEvent(KeyEvent*);
+		virtual void keyReleaseEvent(KeyEvent*);
 
 		std::list<std::shared_ptr<Widget>> children;
 

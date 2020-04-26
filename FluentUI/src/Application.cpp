@@ -4,7 +4,7 @@
 #include <FluentUI/Event.h>
 #include <FluentUI/MouseEvent.h>
 #include <FluentUI/InputEvent.h>
-#include "StringTools.h"
+#include <FluentUI/KeyEvent.h>
 using namespace Fluentui;
 
 std::list<Widget*> Application::primaryWindows;
@@ -16,6 +16,7 @@ Widget* Application::__focusWidget = nullptr;
 static void mouseMoveCallback(GLFWwindow* window, double x, double y);
 static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 static void inputCallback(GLFWwindow* window, unsigned codepoint);
+static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 Application::Application()
 {
@@ -43,6 +44,7 @@ int Application::exec()
 		glfwSetCursorPosCallback(window, mouseMoveCallback);
 		glfwSetMouseButtonCallback(window, mouseButtonCallback);
 		glfwSetCharCallback(window, inputCallback);
+		glfwSetKeyCallback(window, keyCallback);
 	}
 	try
 	{
@@ -134,13 +136,11 @@ void Application::processMouseButtonEvent(Widget* recevier, MouseEvent* event)
 
 void Application::processInputEvent(Widget* recevier, InputEvent* event)
 {
-	for (auto& child : recevier->children)
-	{
-		if (child->isFocus())
-		{
-			processInputEvent(child.get(), event);
-		}
-	}
+	sendEvent(recevier, event);
+}
+
+void Application::processKeyEvent(Widget* recevier, KeyEvent* event)
+{
 	sendEvent(recevier, event);
 }
 
@@ -187,8 +187,18 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 
 void inputCallback(GLFWwindow* window, unsigned codepoint)
 {
-	std::u8string inputText = codepointToU8string(codepoint);
-	InputEvent e(Event::Type::Input, inputText);
+	char32_t ch = static_cast<char32_t>(codepoint);
+	InputEvent e(Event::Type::Input, ch);
 	Widget* recevier = Application::focusWidget() ? Application::focusWidget() : windowToWidgetMap[window];
 	Application::processInputEvent(recevier, &e);
+}
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	auto type = Event::Type::KeyPress;
+	if (action == GLFW_RELEASE)
+		type = Event::Type::KeyRelease;
+	Widget* recevier = Application::focusWidget() ? Application::focusWidget() : windowToWidgetMap[window];
+	KeyEvent event(type, key);
+	Application::processKeyEvent(recevier, &event);
 }
