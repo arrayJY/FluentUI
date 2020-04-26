@@ -10,7 +10,7 @@ namespace Fluentui
 	class TextBox : public Widget
 	{
 	public:
-		TextBox(Widget* parent);
+		TextBox(std::u8string_view text = u8"", Widget* parent = nullptr);
 	protected:
 		void draw(SkCanvas*, int offsetX, int offsetY);
 

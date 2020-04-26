@@ -12,14 +12,14 @@ using namespace Fluentui;
 int TextBox::DEFAULT_WIDTH = 150;
 int TextBox::DEFAULT_HEIGHT = 20;
 
-TextBox::TextBox(Widget* parent)
+TextBox::TextBox(std::u8string_view text, Widget* parent)
 	: Widget(parent),
-	__text(U"TextBox")
+	__text(u8stringToU32string(text))
 {
-	__label = new Label(u8"TextBox", this);
+	__label = new Label(text, this);
 	__label->setIsAcceptFocus(false);
 	setRect(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	__label->setPos(2, height() - __label->height() - 1);
+	__label->setPos(2, height() - __label->height() - 2);
 }
 
 void TextBox::draw(SkCanvas* canvas, int offsetX, int offsetY)
@@ -39,9 +39,11 @@ void TextBox::inputEvent(InputEvent* e)
 
 void TextBox::keyPressEvent(KeyEvent* e)
 {
-	if (e->key() == GLFW_KEY_BACKSPACE)
+	if (e->key() == GLFW_KEY_BACKSPACE && !__text.empty())
+	{
 		__text.pop_back();
-	updateText();
+		updateText();
+	}
 }
 
 void TextBox::updateText()

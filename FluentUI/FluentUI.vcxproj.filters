@@ -71,5 +71,8 @@
     <ClCompile Include="src\TextBox.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\StringTools.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

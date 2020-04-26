@@ -10,7 +10,7 @@ namespace Fluentui
 	{
 
 	public:
-		Button(std::u8string_view text, Widget* parent = nullptr);
+		Button(std::u8string_view text = u8"", Widget* parent = nullptr);
 
 		void setText(std::u8string_view text);
 

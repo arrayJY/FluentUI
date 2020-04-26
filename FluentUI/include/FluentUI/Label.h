@@ -12,7 +12,7 @@ namespace Fluentui
 	class Label : public Widget
 	{
 	public:
-		Label(std::u8string_view, Widget* parent = nullptr);
+		Label(std::u8string_view = u8"", Widget* parent = nullptr);
 		~Label() = default;
 		void setFont(std::u8string_view);
 		void setText(std::u8string_view);
@@ -27,7 +27,8 @@ namespace Fluentui
 		void resize();
 		Font font;
 		std::u8string __text;
-		size_t size;
 		sk_sp<SkTextBlob> blob;
+
+		const static std::u8string_view DEFAULT_FONT;
 	};
 }
