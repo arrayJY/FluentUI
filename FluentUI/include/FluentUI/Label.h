@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <string_view>
 #include <FluentUI/Widget.h>
 #include <FluentUI/Font.h>
 #include <include/core/SkFont.h>
@@ -11,13 +12,13 @@ namespace Fluentui
 	class Label : public Widget
 	{
 	public:
-		Label(const char*, Widget* parent = nullptr);
+		Label(std::u8string_view, Widget* parent = nullptr);
 		~Label() = default;
-		void setFont(const char*);
-		void setText(const char*);
+		void setFont(std::u8string_view);
+		void setText(std::u8string_view);
 		void setSize(size_t size);
 
-		const std::string& text();
+		const std::u8string_view text();
 
 	protected:
 		void draw(SkCanvas*, int offsetX, int offsetY);
@@ -25,7 +26,7 @@ namespace Fluentui
 	private:
 		void resize();
 		Font font;
-		std::string __text;
+		std::u8string __text;
 		size_t size;
 		sk_sp<SkTextBlob> blob;
 	};

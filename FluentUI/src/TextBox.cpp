@@ -16,7 +16,7 @@ TextBox::TextBox(Widget* parent)
 	: Widget(parent),
 	__text(U"TextBox")
 {
-	__label = new Label("TextBox", this);
+	__label = new Label(u8"TextBox", this);
 	__label->setIsAcceptFocus(false);
 	setRect(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	__label->setPos(2, height() - __label->height() - 1);
@@ -46,10 +46,5 @@ void TextBox::keyPressEvent(KeyEvent* e)
 
 void TextBox::updateText()
 {
-	std::string newStr;
-	for (const auto& codepoint : __text)
-	{
-		newStr += u8stringToString(codepointToU8string(codepoint));
-	}
-	__label->setText(newStr.c_str());
+	__label->setText(u32stringToU8string(__text));
 }

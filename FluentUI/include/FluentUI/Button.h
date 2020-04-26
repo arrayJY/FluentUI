@@ -10,9 +10,9 @@ namespace Fluentui
 	{
 
 	public:
-		Button(const char* text, Widget* parent = nullptr);
+		Button(std::u8string_view text, Widget* parent = nullptr);
 
-		void setText(const char* text);
+		void setText(std::u8string_view text);
 
 	protected:
 		void draw(SkCanvas*, int offsetX, int offsetY);
@@ -22,7 +22,6 @@ namespace Fluentui
 		void mouseReleaseEvent(MouseEvent* e);
 
 	private:
-		std::string __text;
 		Label* __label;
 		SkColor __backgroundColor;
 

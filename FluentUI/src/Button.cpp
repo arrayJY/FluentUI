@@ -4,17 +4,15 @@
 #include <FluentUI/MouseEvent.h>
 using namespace Fluentui;
 
-Button::Button(const char* t, Widget* parent)
+Button::Button(std::u8string_view text, Widget* parent)
 	: Widget(parent),
-	__text(t), __label(nullptr),
+	__label(nullptr),
 	__backgroundColor(DEFAULT_GACKGROUND_COLOR)
 {
-	__label = new Label(t, this);
-	if (__text.empty())
-	{
-		__text = "Button";
-		__label->setText(__text.c_str());
-	}
+	if (text.empty())
+		__label = new Label(u8"Button", this);
+	else
+		__label = new Label(text, this);
 	setRect(__label->width() + DEFAULT_X_PADDING, __label->height() + 2 * DEFAULT_Y_PADDING);
 	__label->setPos(DEFAULT_X_PADDING, DEFAULT_Y_PADDING);
 	__label->setIsAcceptFocus(false);
@@ -28,9 +26,8 @@ void Button::draw(SkCanvas* canvas, int offsetX, int offsetY)
 	canvas->drawRect(rect, paint);
 }
 
-void Button::setText(const char* text)
+void Button::setText(std::u8string_view text)
 {
-	__text = text;
 	__label->setText(text);
 	setRect(__label->width() + 2 * DEFAULT_X_PADDING, __label->height() + 2 * DEFAULT_Y_PADDING);
 }
