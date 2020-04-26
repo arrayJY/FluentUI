@@ -17,13 +17,15 @@ namespace Fluentui
 		void setText(const char*);
 		void setSize(size_t size);
 
+		const std::string& text();
+
 	protected:
 		void draw(SkCanvas*, int offsetX, int offsetY);
 
 	private:
 		void resize();
 		Font font;
-		std::string text;
+		std::string __text;
 		size_t size;
 		sk_sp<SkTextBlob> blob;
 	};

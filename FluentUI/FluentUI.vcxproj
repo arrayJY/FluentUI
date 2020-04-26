@@ -133,12 +133,18 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)3rdparty\skia;$(ProjectDir)3rdparty\glfw\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)3rdparty\skia\lib\release;$(ProjectDir)3rdparty\glfw\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;skia.lib;msvcrt.lib;OpenGL32.Lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -147,6 +153,7 @@
     <ClCompile Include="src\Font.cpp" />
     <ClCompile Include="src\Label.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\TextBox.cpp" />
     <ClCompile Include="src\Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,9 +161,13 @@
     <ClInclude Include="include\FluentUI\Button.h" />
     <ClInclude Include="include\FluentUI\Event.h" />
     <ClInclude Include="include\FluentUI\Font.h" />
+    <ClInclude Include="include\FluentUI\InputEvent.h" />
+    <ClInclude Include="include\FluentUI\KeyEvent.h" />
     <ClInclude Include="include\FluentUI\Label.h" />
+    <ClInclude Include="include\FluentUI\TextBox.h" />
     <ClInclude Include="include\FluentUI\Widget.h" />
     <ClInclude Include="include\FluentUI\MouseEvent.h" />
+    <ClInclude Include="src\StringTools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
