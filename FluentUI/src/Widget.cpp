@@ -1,6 +1,7 @@
 #include <FluentUI/Application.h>
 #include <FluentUI/Widget.h>
 #include <FluentUI/MouseEvent.h>
+#include <FluentUI/InputEvent.h>
 #include <include/core/SkColor.h>
 #include <include/core/SkColorSpace.h>
 #include <include/core/SkCanvas.h>
@@ -14,8 +15,8 @@ Widget::Widget(Widget* parent)
 	: __gackgroundColor(SK_ColorWHITE),
 	__width(0), __height(0), __x(0), __y(0),
 	__glfwContext(nullptr), __skiaContext(nullptr),
-	__visible(false),
-	  parent(parent)
+	__visible(false), __focus(false), __isAcceptFocus(true),
+	parent(parent)
 {
 	/*
 	 * Add widget to applicaton primary window if has no parent
@@ -81,6 +82,9 @@ void Widget::event(Event* event)
 	case Event::Type::MouseRelease:
 		mouseReleaseEvent(static_cast<MouseEvent*>(event));
 		break;
+	case Event::Type::Input:
+		inputEvent(static_cast<InputEvent*>(event));
+		break;
 	default:
 		return;
 	}
@@ -103,10 +107,15 @@ void Widget::setRect(int width, int height)
 		__glfwContext->setSize(width, height);
 	}
 }
+void Widget::setFocus() { __focus = true; }
+void Widget::clearFocus() { __focus = false; }
+void Widget::setIsAcceptFocus(bool i) { __isAcceptFocus = i; }
 
 int Widget::x() const { return __x; }
 int Widget::y() const { return __y; }
 bool Widget::isVisible() const { return __visible; }
+bool Widget::isFocus() const { return __focus; }
+bool Widget::isAcceptFocus() const { return __isAcceptFocus; }
 int Widget::width() const { return __width; }
 int Widget::height() const { return __height; }
 
@@ -115,6 +124,7 @@ void Widget::enterEvent(Event*) { }
 void Widget::leaveEvent(Event*) { }
 void Widget::mousePressEvent(MouseEvent*) { }
 void Widget::mouseReleaseEvent(MouseEvent*) { }
+void Widget::inputEvent(InputEvent*) { }
 
 /************************ Proxy Class *************************/
 

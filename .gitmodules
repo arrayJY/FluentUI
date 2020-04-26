@@ -7,3 +7,6 @@
 [submodule "FluentUI/3rdparty/nano-signal-slot"]
 	path = FluentUI/3rdparty/nano-signal-slot
 	url = https://github.com/NoAvailableAlias/nano-signal-slot.git
+[submodule "FluentUI/3rdparty/glfw_with_ime_support"]
+	path = FluentUI/3rdparty/glfw_with_ime_support
+	url = https://github.com/shibukawa/glfw-1.git

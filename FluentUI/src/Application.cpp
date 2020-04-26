@@ -3,15 +3,19 @@
 #include <FluentUI/Widget.h>
 #include <FluentUI/Event.h>
 #include <FluentUI/MouseEvent.h>
+#include <FluentUI/InputEvent.h>
+#include "StringTools.h"
 using namespace Fluentui;
 
 std::list<Widget*> Application::primaryWindows;
 static std::unordered_map<GLFWwindow*, Widget*> windowToWidgetMap;
 int Application::__lastmousePosX = 0;
 int Application::__lastmousePosY = 0;
+Widget* Application::__focusWidget = nullptr;
 
 static void mouseMoveCallback(GLFWwindow* window, double x, double y);
 static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+static void inputCallback(GLFWwindow* window, unsigned codepoint);
 
 Application::Application()
 {
@@ -38,6 +42,7 @@ int Application::exec()
 		windowToWidgetMap[window] = i;
 		glfwSetCursorPosCallback(window, mouseMoveCallback);
 		glfwSetMouseButtonCallback(window, mouseButtonCallback);
+		glfwSetCharCallback(window, inputCallback);
 	}
 	try
 	{
@@ -103,21 +108,60 @@ void Application::processMouseEvent(Widget* recevier, MouseEvent* event)
 	}
 }
 
-void Application::processMouseButtonEvent(Widget* recevier, MouseEvent::MouseButton button, Event::Type type)
+void Application::processMouseButtonEvent(Widget* recevier, MouseEvent* event)
 {
-	for (auto& childWidget : recevier->children)
+	for (auto& child: recevier->children)
 	{
-		if (isPointInWidget(childWidget.get(), __lastmousePosX, __lastmousePosY))
+		if (isPointInWidget(child.get(), getMouseX(), getMouseY()))
 		{
-			processMouseButtonEvent(childWidget.get(), button, type);
-
-			MouseEvent event(type, __lastmousePosX, __lastmousePosY, button);
-			sendEvent(childWidget.get(), &event);
+			processMouseButtonEvent(child.get(), event);
 		}
 	}
+	if (event->accepted())
+		return;
+
+	event->accept();
+	sendEvent(recevier, event);
+
+	//set widget focus
+	if (!recevier->isAcceptFocus())
+		return;
+	if (__focusWidget)
+		__focusWidget->clearFocus();
+	__focusWidget = recevier;
+	recevier->setFocus();
+}
+
+void Application::processInputEvent(Widget* recevier, InputEvent* event)
+{
+	for (auto& child : recevier->children)
+	{
+		if (child->isFocus())
+		{
+			processInputEvent(child.get(), event);
+		}
+	}
+	sendEvent(recevier, event);
 }
 
 void Application::setMousePos(int x, int y) { __lastmousePosX = x, __lastmousePosY = y; }
+int Application::getMouseX() { return __lastmousePosX; }
+int Application::getMouseY() { return __lastmousePosY; }
+
+Widget* Application::focusWidget() { return __focusWidget; }
+
+inline bool Application::isPointInWidget(Widget* w, int x, int y)
+{
+	int parentGlobalX = 0, parentGlobalY = 0;
+	Widget* temp = w;
+	while (temp = temp->parent)
+		parentGlobalX += temp->x(), parentGlobalY + temp->y();
+
+	return x > w->x() + parentGlobalX &&
+		y > w->y() + parentGlobalY &&
+		x < w->x() + w->width() + parentGlobalX &&
+		y < w->y() + w->height() + parentGlobalY;
+}
 
 void mouseMoveCallback(GLFWwindow* window, double x, double y)
 {
@@ -136,18 +180,15 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 	if (action == GLFW_RELEASE)
 		type = Event::Type::MouseRelease;
 
-	Application::processMouseButtonEvent(windowToWidgetMap[window], mouseButton, type);
+	MouseEvent event(type, Application::getMouseX(), Application::getMouseY());
+	Application::processMouseButtonEvent(windowToWidgetMap[window], &event);
 }
 
-inline bool Application::isPointInWidget(Widget* w, int x, int y)
-{
-	int parentGlobalX = 0, parentGlobalY = 0;
-	Widget* temp = w;
-	while (temp = temp->parent)
-		parentGlobalX += temp->x(), parentGlobalY + temp->y();
 
-	return x > w->x() + parentGlobalX &&
-		y > w->y() + parentGlobalY &&
-		x < w->x() + w->width() + parentGlobalX &&
-		y < w->y() + w->height() + parentGlobalY;
+void inputCallback(GLFWwindow* window, unsigned codepoint)
+{
+	std::u8string inputText = codepointToU8string(codepoint);
+	InputEvent e(Event::Type::Input, inputText);
+	Widget* recevier = Application::focusWidget() ? Application::focusWidget() : windowToWidgetMap[window];
+	Application::processInputEvent(recevier, &e);
 }

@@ -17,6 +17,7 @@ Button::Button(const char* t, Widget* parent)
 	}
 	setRect(__label->width() + DEFAULT_X_PADDING, __label->height() + 2 * DEFAULT_Y_PADDING);
 	__label->setPos(DEFAULT_X_PADDING, DEFAULT_Y_PADDING);
+	__label->setIsAcceptFocus(false);
 }
 
 void Button::draw(SkCanvas* canvas, int offsetX, int offsetY)

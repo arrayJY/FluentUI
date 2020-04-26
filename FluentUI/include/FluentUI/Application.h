@@ -9,6 +9,7 @@ namespace Fluentui
 	class Widget;
 	class Event;
 	class MouseEvent;
+	class InputEvent;
 	enum class Event::Type;
 	enum class MouseEvent::MouseButton;
 	class Application
@@ -20,9 +21,14 @@ namespace Fluentui
 
 		static void sendEvent(Widget* recevier, Event* event);
 		static void processMouseEvent(Widget*, MouseEvent*);
-		static void processMouseButtonEvent(Widget*, MouseEvent::MouseButton, Event::Type);
+		static void processMouseButtonEvent(Widget*, MouseEvent*);
+		static void processInputEvent(Widget*, InputEvent*);
 
 		static void setMousePos(int x, int y);
+		static int getMouseX();
+		static int getMouseY();
+
+		static Widget* focusWidget();
 
 	private:
 		static void initGLFW();
@@ -32,6 +38,7 @@ namespace Fluentui
 		//Widget having no parent
 		static std::list<Widget*> primaryWindows;
 		static int __lastmousePosX, __lastmousePosY;
+		static Widget* __focusWidget;
 	};
 }
 

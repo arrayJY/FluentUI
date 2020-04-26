@@ -12,6 +12,7 @@ namespace Fluentui
 	class Application;
 	class Event;
 	class MouseEvent;
+	class InputEvent;
 	class Widget
 	{
 	public:
@@ -65,12 +66,17 @@ namespace Fluentui
 		void setVisible(bool visible);
 		void setPos(int x, int y);
 		void setRect(int width, int height);
+		void setFocus();
+		void clearFocus();
+		void setIsAcceptFocus(bool);
 
 		int x() const;
 		int y() const;
 		int width() const;
 		int height() const;
 		bool isVisible() const;
+		bool isFocus() const;
+		bool isAcceptFocus() const;
 
 	protected:
 		virtual void draw(SkCanvas*, int offsetX, int offsetY);
@@ -80,13 +86,14 @@ namespace Fluentui
 		virtual void leaveEvent(Event*);
 		virtual void mousePressEvent(MouseEvent*);
 		virtual void mouseReleaseEvent(MouseEvent*);
+		virtual void inputEvent(InputEvent*);
 
 		std::list<std::shared_ptr<Widget>> children;
 
 	private:
 		int __x, __y;
 		int __width, __height;
-		bool __visible;
+		bool __visible, __focus, __isAcceptFocus;
 		SkColor __gackgroundColor;
 		Widget* parent;
 
