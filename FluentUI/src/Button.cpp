@@ -13,7 +13,7 @@ Button::Button(std::u8string_view text, Widget* parent)
 		__label = new Label(u8"Button", this);
 	else
 		__label = new Label(text, this);
-	setRect(__label->width() + DEFAULT_X_PADDING, __label->height() + 2 * DEFAULT_Y_PADDING);
+	resize(__label->width() + DEFAULT_X_PADDING, __label->height() + 2 * DEFAULT_Y_PADDING);
 	__label->setPos(DEFAULT_X_PADDING, DEFAULT_Y_PADDING);
 	__label->setIsAcceptFocus(false);
 }
@@ -29,7 +29,7 @@ void Button::draw(SkCanvas* canvas, int offsetX, int offsetY)
 void Button::setText(std::u8string_view text)
 {
 	__label->setText(text);
-	setRect(__label->width() + 2 * DEFAULT_X_PADDING, __label->height() + 2 * DEFAULT_Y_PADDING);
+	resize(__label->width() + 2 * DEFAULT_X_PADDING, __label->height() + 2 * DEFAULT_Y_PADDING);
 }
 
 void Button::enterEvent(Event* e) { __backgroundColor = HOVER_GACKGROUND_COLOR; }

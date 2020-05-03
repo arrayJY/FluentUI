@@ -104,7 +104,7 @@ void Widget::setVisible(bool visible)
 		i->setVisible(visible);
 	}
 }
-void Widget::setRect(int width, int height)
+void Widget::resize(int width, int height)
 {
 	__width = width, __height = height;
 	if (!parent)

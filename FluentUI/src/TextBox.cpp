@@ -18,7 +18,7 @@ TextBox::TextBox(std::u8string_view text, Widget* parent)
 {
 	__label = new Label(text, this);
 	__label->setIsAcceptFocus(false);
-	setRect(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+	resize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	__label->setPos(2, height() - __label->height() - 2);
 }
 

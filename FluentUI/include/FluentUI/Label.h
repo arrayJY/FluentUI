@@ -24,7 +24,7 @@ namespace Fluentui
 		void draw(SkCanvas*, int offsetX, int offsetY);
 
 	private:
-		void resize();
+		void __resize();
 		Font font;
 		std::u8string __text;
 		sk_sp<SkTextBlob> blob;

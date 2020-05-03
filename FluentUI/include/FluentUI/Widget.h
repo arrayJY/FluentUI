@@ -66,7 +66,7 @@ namespace Fluentui
 
 		void setVisible(bool visible);
 		void setPos(int x, int y);
-		void setRect(int width, int height);
+		void resize(int width, int height);
 		void setFocus();
 		void clearFocus();
 		void setIsAcceptFocus(bool);
