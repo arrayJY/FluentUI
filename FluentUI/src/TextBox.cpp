@@ -19,7 +19,7 @@ TextBox::TextBox(std::u8string_view text, Widget* parent)
 	__label = new Label(text, this);
 	__label->setIsAcceptFocus(false);
 	resize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	__label->setPos(2, height() - __label->height() - 2);
+	__label->setPos(2, 2);
 }
 
 void TextBox::draw(SkCanvas* canvas, int offsetX, int offsetY)

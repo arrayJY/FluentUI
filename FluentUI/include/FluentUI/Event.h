@@ -13,7 +13,8 @@ namespace Fluentui
 			Leave,
 			Input,
 			KeyPress,
-			KeyRelease
+			KeyRelease,
+			Resize
 		};
 
 		Event(Type type) : __accepted(false) { __type = type; }

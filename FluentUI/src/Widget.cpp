@@ -3,6 +3,7 @@
 #include <FluentUI/MouseEvent.h>
 #include <FluentUI/InputEvent.h>
 #include <FluentUI/KeyEvent.h>
+#include <FluentUI/ResizeEvent.h>
 #include <include/core/SkColor.h>
 #include <include/core/SkColorSpace.h>
 #include <include/core/SkCanvas.h>
@@ -90,6 +91,8 @@ void Widget::event(Event* event)
 		keyPressEvent(static_cast<KeyEvent*>(event));
 	case Event::Type::KeyRelease:
 		keyReleaseEvent(static_cast<KeyEvent*>(event));
+	case Event::Type::Resize:
+		resizeEvent(static_cast<ResizeEvent*>(event));
 	default:
 		return;
 	}
@@ -111,6 +114,8 @@ void Widget::resize(int width, int height)
 	{
 		__glfwContext->setSize(width, height);
 	}
+	ResizeEvent resizeEvent(Event::Type::Resize, width, height);
+	Application::sendEvent(this, &resizeEvent);
 }
 void Widget::setFocus() { __focus = true; }
 void Widget::clearFocus() { __focus = false; }
@@ -132,6 +137,7 @@ void Widget::mouseReleaseEvent(MouseEvent*) { }
 void Widget::inputEvent(InputEvent*) { }
 void Widget::keyPressEvent(KeyEvent*) { }
 void Widget::keyReleaseEvent(KeyEvent*) { }
+void Widget::resizeEvent(ResizeEvent*) { }
 
 /************************ Proxy Class *************************/
 

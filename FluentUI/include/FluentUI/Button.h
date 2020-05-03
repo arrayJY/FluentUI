@@ -20,6 +20,7 @@ namespace Fluentui
 		void leaveEvent(Event* e);
 		void mousePressEvent(MouseEvent* e);
 		void mouseReleaseEvent(MouseEvent* e);
+		void resizeEvent(ResizeEvent* e);
 
 	private:
 		Label* __label;

@@ -2,6 +2,7 @@
 #include <include/core/SkRect.h>
 #include <include/core/SkCanvas.h>
 #include <FluentUI/MouseEvent.h>
+#include <FluentUI/ResizeEvent.h>
 using namespace Fluentui;
 
 Button::Button(std::u8string_view text, Widget* parent)
@@ -36,6 +37,10 @@ void Button::enterEvent(Event* e) { __backgroundColor = HOVER_GACKGROUND_COLOR; 
 void Button::leaveEvent(Event* e) { __backgroundColor = DEFAULT_GACKGROUND_COLOR; }
 void Button::mousePressEvent(MouseEvent* e) { __backgroundColor = PRESS_GACKGROUND_COLOR; }
 void Button::mouseReleaseEvent(MouseEvent* e) { __backgroundColor = HOVER_GACKGROUND_COLOR; }
+void Fluentui::Button::resizeEvent(ResizeEvent* e)
+{
+	__label->setPos((e->width() - __label->width()) / 2, (e->height() - __label->height()) / 2);
+}
 
 
 
