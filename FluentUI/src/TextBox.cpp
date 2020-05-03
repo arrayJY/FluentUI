@@ -49,4 +49,5 @@ void TextBox::keyPressEvent(KeyEvent* e)
 void TextBox::updateText()
 {
 	__label->setText(u32stringToU8string(__text));
+	changeSignal.fire(__label->text());
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <FluentUI/Widget.h>
+#include "../3rdparty/nano-signal-slot/nano_signal_slot.hpp"
 
 namespace Fluentui
 {
@@ -11,6 +12,7 @@ namespace Fluentui
 	{
 	public:
 		TextBox(std::u8string_view text = u8"", Widget* parent = nullptr);
+		Nano::Signal<void(std::u8string_view)> changeSignal;
 	protected:
 		void draw(SkCanvas*, int offsetX, int offsetY);
 

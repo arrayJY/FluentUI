@@ -3,6 +3,7 @@
 #include <FluentUI/Label.h>
 #include <include/core/SkColor.h>
 #include <string>
+#include "../3rdparty/nano-signal-slot/nano_signal_slot.hpp"
 
 namespace Fluentui
 {
@@ -13,6 +14,8 @@ namespace Fluentui
 		Button(std::u8string_view text = u8"", Widget* parent = nullptr);
 
 		void setText(std::u8string_view text);
+
+		Nano::Signal<void()> clickSignal;
 
 	protected:
 		void draw(SkCanvas*, int offsetX, int offsetY);
