@@ -96,6 +96,7 @@ namespace Fluentui
 		virtual void keyReleaseEvent(KeyEvent*);
 		virtual void resizeEvent(ResizeEvent*);
 		virtual void changeEvent(Event*);
+		virtual void focusEvent(Event*);
 
 		std::list<std::shared_ptr<Widget>> children;
 

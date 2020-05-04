@@ -15,7 +15,7 @@ int TextBox::DEFAULT_HEIGHT = 20;
 
 TextBox::TextBox(std::u8string_view text, Widget* parent)
 	: Widget(parent),
-	__text(u8stringToU32string(text))
+	__text(u8stringToU32string(text)), __borderColor(DEFAULT_BORDER_COLOR)
 {
 	__label = new Label(text, this);
 	__label->setIsAcceptFocus(false);
@@ -26,7 +26,7 @@ TextBox::TextBox(std::u8string_view text, Widget* parent)
 void TextBox::draw(SkCanvas* canvas, int offsetX, int offsetY)
 {
 	SkPaint paint;
-	paint.setColor(SK_ColorBLACK);
+	paint.setColor(__borderColor);
     paint.setStyle(SkPaint::kStroke_Style);
 	SkRect rect = SkRect::MakeXYWH(offsetX + x(), offsetY + y(), width(), height());
     canvas->drawRect(rect, paint);
@@ -57,6 +57,18 @@ void TextBox::changeEvent(Event* e)
 		break;
 	default:
 		return;
+	}
+}
+
+void TextBox::focusEvent(Event* e)
+{
+	if(e->type() == Event::Type::GetFocus)
+	{
+		__borderColor = FOCUS_BORDER_COLOR;
+	}
+	else if (e->type() == Event::Type::LostFocus)
+	{
+		__borderColor = DEFAULT_BORDER_COLOR;
 	}
 }
 

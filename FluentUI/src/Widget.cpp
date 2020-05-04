@@ -100,6 +100,10 @@ void Widget::event(Event* event)
 	case Event::Type::FontChange:
 		changeEvent(event);
 		break;
+	case Event::Type::GetFocus:
+	case Event::Type::LostFocus:
+		focusEvent(event);
+		break;
 	default:
 		return;
 	}
@@ -124,8 +128,18 @@ void Widget::resize(int width, int height)
 	ResizeEvent resizeEvent(Event::Type::Resize, width, height);
 	Application::sendEvent(this, &resizeEvent);
 }
-void Widget::setFocus() { __focus = true; }
-void Widget::clearFocus() { __focus = false; }
+void Widget::setFocus()
+{
+	__focus = true;
+	Event e(Event::Type::GetFocus);
+	Application::sendEvent(this, &e);
+}
+void Widget::clearFocus()
+{
+	__focus = false; 
+	Event e(Event::Type::LostFocus);
+	Application::sendEvent(this, &e);
+}
 void Widget::setIsAcceptFocus(bool i) { __isAcceptFocus = i; }
 void Widget::setFont(const Font& newFont)
 {
@@ -153,6 +167,7 @@ void Widget::keyPressEvent(KeyEvent*) { }
 void Widget::keyReleaseEvent(KeyEvent*) { }
 void Widget::resizeEvent(ResizeEvent*) { }
 void Widget::changeEvent(Event*) { }
+void Widget::focusEvent(Event*) { }
 
 /************************ Proxy Class *************************/
 
