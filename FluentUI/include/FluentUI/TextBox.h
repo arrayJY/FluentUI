@@ -18,6 +18,7 @@ namespace Fluentui
 
 		void inputEvent(InputEvent*);
 		void keyPressEvent(KeyEvent*);
+		void changeEvent(Event*);
 
 	private:
 		void updateText();

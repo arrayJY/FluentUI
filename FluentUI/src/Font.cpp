@@ -1,19 +1,33 @@
 #include <FluentUI/Font.h>
 #include <../src/StringTools.h>
+using namespace Fluentui;
 
-Fluentui::Font::Font(std::u8string_view fontFamily, size_t size)
+const std::u8string_view Font::DEFAULT_FONT_FAMILY = u8"Microsoft Yahei";
+
+Font::Font()
 {
-	fontManager = SkFontMgr::RefDefault();
-	typeface = fontManager->legacyMakeTypeface(u8stringToString(fontFamily).c_str(), fontStyle);
-	font = SkFont(typeface, size, 1.0f, 0.0f);
+	__fontManager = SkFontMgr::RefDefault();
+	__typeface = __fontManager->legacyMakeTypeface(u8stringToString(DEFAULT_FONT_FAMILY).c_str(), __fontStyle);
+	__font = SkFont(__typeface, DEFAULT_SIZE, 1.0f, 0.0f);
 }
 
-SkFont& Fluentui::Font::skFont() { return font; }
-
-void Fluentui::Font::setFont(std::u8string_view fontFamily, size_t size)
+Font::Font(std::u8string_view fontFamily, size_t size)
 {
-	typeface = fontManager->legacyMakeTypeface(u8stringToString(fontFamily).c_str(), fontStyle);
-	font = SkFont(typeface, size, 1.0f, 0.0f);
+	__fontManager = SkFontMgr::RefDefault();
+	__typeface = __fontManager->legacyMakeTypeface(u8stringToString(fontFamily).c_str(), __fontStyle);
+	__font = SkFont(__typeface, size, 1.0f, 0.0f);
 }
 
-void Fluentui::Font::setSize(size_t size) { font = font.makeWithSize(size); }
+const SkFont& Font::skFont() const { return __font; }
+
+void Font::setFont(std::u8string_view fontFamily, size_t size)
+{
+	__typeface = __fontManager->legacyMakeTypeface(u8stringToString(fontFamily).c_str(), __fontStyle);
+	__font = SkFont(__typeface, size, 1.0f, 0.0f);
+}
+
+void Font::setSize(size_t size)
+{
+	__size = size;
+	__font = __font.makeWithSize(size);
+}

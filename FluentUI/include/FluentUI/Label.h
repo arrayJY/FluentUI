@@ -14,18 +14,16 @@ namespace Fluentui
 	public:
 		Label(std::u8string_view = u8"", Widget* parent = nullptr);
 		~Label() = default;
-		void setFont(std::u8string_view);
 		void setText(std::u8string_view);
-		void setSize(size_t size);
 
 		const std::u8string_view text();
 
 	protected:
 		void draw(SkCanvas*, int offsetX, int offsetY);
+		void changeEvent(Event*);
 
 	private:
 		void __resize();
-		Font font;
 		std::u8string __text;
 		sk_sp<SkTextBlob> blob;
 

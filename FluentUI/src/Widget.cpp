@@ -39,6 +39,7 @@ Widget::Widget(Widget* parent)
 	__width = WINDOW_DEFAULT_WIDTH, __height = WINDOW_DEFAULT_HEIGHT;
 	__glfwContext = std::make_unique<WindowGLFWContext>(__width, __height);
 	__skiaContext = std::make_unique<WindowSkiaContext>(__width, __height);
+	__font = Font();
 }
 
 void Widget::draw(SkCanvas* canvas, int offsetX, int offsetY)
@@ -89,10 +90,16 @@ void Widget::event(Event* event)
 		break;
 	case Event::Type::KeyPress:
 		keyPressEvent(static_cast<KeyEvent*>(event));
+		break;
 	case Event::Type::KeyRelease:
 		keyReleaseEvent(static_cast<KeyEvent*>(event));
+		break;
 	case Event::Type::Resize:
 		resizeEvent(static_cast<ResizeEvent*>(event));
+		break;
+	case Event::Type::FontChange:
+		changeEvent(event);
+		break;
 	default:
 		return;
 	}
@@ -120,6 +127,12 @@ void Widget::resize(int width, int height)
 void Widget::setFocus() { __focus = true; }
 void Widget::clearFocus() { __focus = false; }
 void Widget::setIsAcceptFocus(bool i) { __isAcceptFocus = i; }
+void Widget::setFont(const Font& newFont)
+{
+	__font = newFont; 
+	Event fontChangeEvent(Event::Type::FontChange);
+	Application::sendEvent(this, &fontChangeEvent);
+}
 
 int Widget::x() const { return __x; }
 int Widget::y() const { return __y; }
@@ -128,6 +141,7 @@ bool Widget::isFocus() const { return __focus; }
 bool Widget::isAcceptFocus() const { return __isAcceptFocus; }
 int Widget::width() const { return __width; }
 int Widget::height() const { return __height; }
+const Font& Widget::font() { return __font; }
 
 void Widget::mouseMoveEvent(MouseEvent*) { }
 void Widget::enterEvent(Event*) { }
@@ -138,6 +152,7 @@ void Widget::inputEvent(InputEvent*) { }
 void Widget::keyPressEvent(KeyEvent*) { }
 void Widget::keyReleaseEvent(KeyEvent*) { }
 void Widget::resizeEvent(ResizeEvent*) { }
+void Widget::changeEvent(Event*) { }
 
 /************************ Proxy Class *************************/
 

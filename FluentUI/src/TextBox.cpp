@@ -1,3 +1,4 @@
+#include <FluentUI/Application.h>
 #include <FluentUI/TextBox.h>
 #include <FluentUI/Label.h>
 #include <FluentUI/InputEvent.h>
@@ -43,6 +44,19 @@ void TextBox::keyPressEvent(KeyEvent* e)
 	{
 		__text.pop_back();
 		updateText();
+	}
+}
+
+void TextBox::changeEvent(Event* e)
+{
+	switch (e->type())
+	{
+	case Event::Type::FontChange:
+		__label->setFont(font());
+		Application::sendEvent(__label, e);
+		break;
+	default:
+		return;
 	}
 }
 

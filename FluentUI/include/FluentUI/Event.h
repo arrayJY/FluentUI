@@ -14,7 +14,8 @@ namespace Fluentui
 			Input,
 			KeyPress,
 			KeyRelease,
-			Resize
+			Resize,
+			FontChange
 		};
 
 		Event(Type type) : __accepted(false) { __type = type; }

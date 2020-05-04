@@ -24,8 +24,10 @@ namespace Fluentui
 		void mousePressEvent(MouseEvent* e);
 		void mouseReleaseEvent(MouseEvent* e);
 		void resizeEvent(ResizeEvent* e);
+		void changeEvent(Event* e);
 
 	private:
+		void __alignTextCenter();
 		Label* __label;
 		SkColor __backgroundColor;
 

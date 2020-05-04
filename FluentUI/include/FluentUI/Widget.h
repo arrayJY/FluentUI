@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <include/core/SkSurface.h>
 #include <include/gpu/GrContext.h>
+#include <FluentUI/Font.h>
 
 namespace Fluentui
 {
@@ -71,6 +72,7 @@ namespace Fluentui
 		void setFocus();
 		void clearFocus();
 		void setIsAcceptFocus(bool);
+		void setFont(const Font&);
 
 		int x() const;
 		int y() const;
@@ -79,6 +81,7 @@ namespace Fluentui
 		bool isVisible() const;
 		bool isFocus() const;
 		bool isAcceptFocus() const;
+		const Font& font();
 
 	protected:
 		virtual void draw(SkCanvas*, int offsetX, int offsetY);
@@ -92,6 +95,7 @@ namespace Fluentui
 		virtual void keyPressEvent(KeyEvent*);
 		virtual void keyReleaseEvent(KeyEvent*);
 		virtual void resizeEvent(ResizeEvent*);
+		virtual void changeEvent(Event*);
 
 		std::list<std::shared_ptr<Widget>> children;
 
@@ -100,6 +104,7 @@ namespace Fluentui
 		int __width, __height;
 		bool __visible, __focus, __isAcceptFocus;
 		SkColor __gackgroundColor;
+		Font __font;
 		Widget* parent;
 
 		friend class Application;

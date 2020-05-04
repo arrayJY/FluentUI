@@ -1,8 +1,9 @@
+#include <FluentUI/Application.h>
 #include <FluentUI/Button.h>
-#include <include/core/SkRect.h>
-#include <include/core/SkCanvas.h>
 #include <FluentUI/MouseEvent.h>
 #include <FluentUI/ResizeEvent.h>
+#include <include/core/SkRect.h>
+#include <include/core/SkCanvas.h>
 using namespace Fluentui;
 
 Button::Button(std::u8string_view text, Widget* parent)
@@ -30,7 +31,7 @@ void Button::draw(SkCanvas* canvas, int offsetX, int offsetY)
 void Button::setText(std::u8string_view text)
 {
 	__label->setText(text);
-	resize(__label->width() + 2 * DEFAULT_X_PADDING, __label->height() + 2 * DEFAULT_Y_PADDING);
+	__alignTextCenter();
 }
 
 void Button::enterEvent(Event* e) { __backgroundColor = HOVER_GACKGROUND_COLOR; }
@@ -41,10 +42,25 @@ void Button::mouseReleaseEvent(MouseEvent* e)
 	__backgroundColor = HOVER_GACKGROUND_COLOR;
 	clickSignal.fire();
 }
-void Fluentui::Button::resizeEvent(ResizeEvent* e)
+void Button::resizeEvent(ResizeEvent* e)
 {
-	__label->setPos((e->width() - __label->width()) / 2, (e->height() - __label->height()) / 2);
+	__alignTextCenter();
 }
+void Button::changeEvent(Event* e)
+{
+	switch (e->type())
+	{
+	case Event::Type::FontChange:
+		__label->setFont(font());
+		Application::sendEvent(__label, e);
+		__alignTextCenter();
+		break;
+	default:
+		return;
+	}
+}
+
+void Button::__alignTextCenter() { __label->setPos((width() - __label->width()) / 2 + DEFAULT_X_PADDING, (height() - __label->height()) / 2); }
 
 
 

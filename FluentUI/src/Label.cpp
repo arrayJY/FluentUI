@@ -1,29 +1,35 @@
 #include <FluentUI/Label.h>
+#include <FluentUI/Event.h>
 #include <include/core/SkTextBlob.h>
 #include <include/core/SkCanvas.h>
 #include <include/core/SkColor.h>
 #include <../src/StringTools.h>
 using namespace Fluentui;
 
-const std::u8string_view Label::DEFAULT_FONT = u8"宋体";
-
 Label::Label(std::u8string_view str, Widget* parent)
-	: Widget(parent), font(DEFAULT_FONT), __text(str)
+	: Widget(parent), __text(str)
 {
 	if (str.empty())
 	{
 		resize(0, Font::DEFAULT_SIZE);
 		return;
 	}
-	blob = SkTextBlob::MakeFromString(u8stringToString(str).c_str(), font.skFont());
+	blob = SkTextBlob::MakeFromString(u8stringToString(str).c_str(), font().skFont());
 	__resize();
 }
 
-void Label::setFont(std::u8string_view fontFamily)
+void Label::changeEvent(Event* e)
 {
-	font.setFont(fontFamily);
-	blob = SkTextBlob::MakeFromString(u8stringToString(__text).c_str(), font.skFont());
-	__resize();
+	if (__text.empty())
+	{
+		resize(0, Font::DEFAULT_SIZE);
+		return;
+	}
+	if (e->type() == Event::Type::FontChange)
+	{
+		blob = SkTextBlob::MakeFromString(u8stringToString(__text).c_str(), font().skFont());
+		__resize();
+	}
 }
 
 void Label::setText(std::u8string_view newText)
@@ -34,14 +40,7 @@ void Label::setText(std::u8string_view newText)
 		resize(0, height());
 		return;
 	}
-	blob = SkTextBlob::MakeFromString(u8stringToString(__text).c_str(), font.skFont());
-	__resize();
-}
-
-void Label::setSize(size_t size)
-{
-	font.setSize(size);
-	blob = SkTextBlob::MakeFromString(u8stringToString(__text).c_str(), font.skFont());
+	blob = SkTextBlob::MakeFromString(u8stringToString(__text).c_str(), font().skFont());
 	__resize();
 }
 
