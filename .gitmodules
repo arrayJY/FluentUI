@@ -1,9 +1,0 @@
-[submodule "FluentUI/3rdparty/skia"]
-	path = FluentUI/3rdparty/skia
-	url = https://github.com/google/skia.git
-[submodule "FluentUI/3rdparty/glfw"]
-	path = FluentUI/3rdparty/glfw
-	url = https://github.com/glfw/glfw.git
-[submodule "FluentUI/3rdparty/nano-signal-slot"]
-	path = FluentUI/3rdparty/nano-signal-slot
-	url = https://github.com/NoAvailableAlias/nano-signal-slot.git
