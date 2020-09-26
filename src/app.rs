@@ -1,9 +1,9 @@
+use crate::color::Color;
 use skulpin::app::AppBuilder;
 use skulpin::app::AppDrawArgs;
 use skulpin::app::AppError;
 use skulpin::app::AppHandler;
 use skulpin::app::AppUpdateArgs;
-use skulpin::skia_safe::Color;
 use skulpin::CoordinateSystem;
 use skulpin::LogicalSize;
 use std::ffi::CString;
@@ -18,7 +18,7 @@ impl App {
             app: AppInner {
                 width: width,
                 height: height,
-                background_color: Color::from_argb(255, 255, 255, 255),
+                background_color: Color::White,
             },
         }
     }
@@ -54,7 +54,7 @@ impl AppHandler for AppInner {
 
     fn draw(&mut self, draw_args: AppDrawArgs) {
         let canvas = draw_args.canvas;
-        canvas.clear(self.background_color);
+        canvas.clear(self.background_color.to_skcolor());
     }
     fn fatal_error(&mut self, error: &AppError) {
         println!("{}", error);
