@@ -1,4 +1,5 @@
 use crate::color::Color;
+use crate::widget::Widget;
 use skulpin::app::AppBuilder;
 use skulpin::app::AppDrawArgs;
 use skulpin::app::AppError;
@@ -19,8 +20,13 @@ impl App {
                 width: width,
                 height: height,
                 background_color: Color::White,
+                widgets: Vec::new(),
             },
         }
+    }
+    pub fn push_widget(&mut self, widget: Box<dyn Widget>)
+    {
+        self.app.widgets.push(widget);
     }
     pub fn run(self) {
         let logical_size = LogicalSize::new(self.app.width(), self.app.height());
@@ -34,10 +40,11 @@ impl App {
     }
 }
 
-struct AppInner {
+struct AppInner{
     width: u32,
     height: u32,
     background_color: Color,
+    widgets: Vec<Box<dyn Widget>>,
 }
 
 impl AppInner {
@@ -55,6 +62,9 @@ impl AppHandler for AppInner {
     fn draw(&mut self, draw_args: AppDrawArgs) {
         let canvas = draw_args.canvas;
         canvas.clear(self.background_color.to_skcolor());
+        for widget in self.widgets.iter_mut(){
+            widget.draw(canvas);
+        }
     }
     fn fatal_error(&mut self, error: &AppError) {
         println!("{}", error);
