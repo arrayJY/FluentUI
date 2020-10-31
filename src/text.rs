@@ -4,7 +4,6 @@ use skulpin::skia_safe::TextBlob;
 use skulpin::skia_safe::Typeface;
 use typetag::serde::{Serialize, Serializer};
 pub struct Text {
-    sk_font: SkFont,
     text: String,
     text_blob: TextBlob,
 }
@@ -21,7 +20,6 @@ impl Text {
         Text {
             text: String::from(text),
             text_blob: TextBlob::new(text, &font).unwrap(),
-            sk_font: font,
         }
     }
     pub fn width(&self) -> f32 {
