@@ -8,11 +8,13 @@ use skulpin::app::AppUpdateArgs;
 use skulpin::CoordinateSystem;
 use skulpin::LogicalSize;
 use std::ffi::CString;
+use quick_xml::de::{from_str};
 
 pub struct App {
     app: AppInner,
 }
 
+#[allow(dead_code)]
 impl App {
     pub fn new(width: u32, height: u32) -> Self {
         App {
@@ -24,9 +26,10 @@ impl App {
             },
         }
     }
-    pub fn push_widget(&mut self, widget: Box<dyn Widget>)
-    {
+    pub fn layout(mut self, xml: &str) -> Self {
+        let widget = from_str(xml).unwrap();
         self.app.widgets.push(widget);
+        self
     }
     pub fn run(self) {
         let logical_size = LogicalSize::new(self.app.width(), self.app.height());
@@ -40,7 +43,7 @@ impl App {
     }
 }
 
-struct AppInner{
+struct AppInner {
     width: u32,
     height: u32,
     background_color: Color,
@@ -56,13 +59,15 @@ impl AppInner {
     }
 }
 
+#[allow(dead_code)]
 impl AppHandler for AppInner {
+    #[allow(unused_variables)]
     fn update(&mut self, update_args: AppUpdateArgs) {}
 
     fn draw(&mut self, draw_args: AppDrawArgs) {
         let canvas = draw_args.canvas;
         canvas.clear(self.background_color.to_skcolor());
-        for widget in self.widgets.iter_mut(){
+        for widget in self.widgets.iter_mut() {
             widget.draw(canvas);
         }
     }
