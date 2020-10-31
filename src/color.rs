@@ -2,14 +2,16 @@ use skulpin::skia_safe::Color as SkColor;
 use std::convert::From;
 use std::str::FromStr;
 use std::string::String;
+use serde::{Serialize, Deserialize};
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Color {
     //Todo: More colors
     White,
     Black,
 }
 
+#[allow(dead_code)]
 impl Color {
     pub fn to_str(&self) -> &'static str {
         match *self {
