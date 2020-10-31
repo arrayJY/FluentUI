@@ -1,7 +1,7 @@
 use skulpin::skia_safe::Canvas;
 pub mod label;
 
-#[typetag::serde(tag = "type")]
+#[typetag::serde]
 pub trait Widget {
     fn width(&self) -> f32;
     fn height(&self) -> f32;
