@@ -1,5 +1,6 @@
 use skulpin::skia_safe::Canvas;
 pub mod label;
+pub mod textfield;
 
 #[typetag::serde]
 pub trait Widget {
