@@ -1,17 +1,12 @@
 use crate::color::Color;
 use crate::widget::Widget;
-use serde_json::from_str;
 use serde::de::value::MapAccessDeserializer;
 use serde::de::{DeserializeSeed, Deserializer, IntoDeserializer, MapAccess, Visitor};
 use serde::Deserialize;
-use skulpin::app::AppBuilder;
-use skulpin::app::AppDrawArgs;
-use skulpin::app::AppError;
-use skulpin::app::AppHandler;
-use skulpin::app::AppUpdateArgs;
+use serde_json::from_str;
+use skulpin::skia_safe::Canvas;
+use skulpin::winit;
 use skulpin::CoordinateSystem;
-use skulpin::LogicalSize;
-use std::ffi::CString;
 use std::fmt::{self};
 use std::marker::PhantomData;
 
@@ -22,9 +17,7 @@ pub struct App {
 #[allow(dead_code)]
 impl App {
     pub fn new() -> Self {
-        App {
-            app:None,
-        }
+        App { app: None }
     }
     pub fn layout(mut self, json: &str) -> Self {
         let app = from_str(json).unwrap();
@@ -32,15 +25,58 @@ impl App {
         self
     }
     pub fn run(self) {
-        let app = self.app.unwrap();
-        let logical_size = LogicalSize::new(app.width(), app.height());
-        AppBuilder::new()
-            .app_name(CString::new(String::from("FluentUI")).unwrap())
-            .window_title(String::from("FluentUI App"))
-            .inner_size(logical_size)
+        let event_loop = winit::event_loop::EventLoop::<()>::with_user_event();
+        let mut app = self.app.unwrap();
+        let logical_size = winit::dpi::LogicalSize::new(app.width(), app.height());
+        let winit_window = winit::window::WindowBuilder::new()
+            .with_title(app.title())
+            .with_inner_size(logical_size)
+            .build(&event_loop)
+            .expect("Failed to create window");
+
+        let window = skulpin::WinitWindow::new(&winit_window);
+        let renderer = skulpin::RendererBuilder::new()
             .use_vulkan_debug_layer(false)
             .coordinate_system(CoordinateSystem::Logical)
-            .run(app);
+            .build(&window);
+
+        if let Err(e) = renderer {
+            println!("Error during renderer construction: {:?}", e);
+            return;
+        }
+
+        let mut renderer = renderer.unwrap();
+        event_loop.run(move |event, _window_target, control_flow| {
+            let window = skulpin::WinitWindow::new(&winit_window);
+
+            match event {
+                winit::event::Event::WindowEvent {
+                    event: winit::event::WindowEvent::CloseRequested,
+                    ..
+                } => *control_flow = winit::event_loop::ControlFlow::Exit,
+                winit::event::Event::MainEventsCleared => {
+                    // Queue a RedrawRequested event.
+                    winit_window.request_redraw();
+                }
+
+                //
+                // Redraw
+                //
+                winit::event::Event::RedrawRequested(_window_id) => {
+                    if let Err(e) = renderer.draw(&window, |canvas, _coordinate_system_helper| {
+                        app.draw(canvas)
+                    }) {
+                        println!("Error during draw: {:?}", e);
+                        *control_flow = winit::event_loop::ControlFlow::Exit
+                    }
+                }
+
+                //
+                // Ignore all other events
+                //
+                _ => {}
+            }
+        });
     }
 }
 
@@ -52,6 +88,8 @@ struct AppInner {
     height: u32,
     #[serde(default = "AppInner::default_color")]
     background_color: Color,
+    #[serde(default = "AppInner::default_title")]
+    title: String,
     #[serde(deserialize_with = "AppInner::from_typetag_objects")]
     widgets: Vec<Box<dyn Widget>>,
 }
@@ -63,11 +101,17 @@ impl AppInner {
     fn height(&self) -> u32 {
         self.height
     }
+    fn title(&self) -> &str {
+        &self.title[..]
+    }
     fn default_width() -> u32 {
         400
     }
     fn default_height() -> u32 {
         300
+    }
+    fn default_title() -> String {
+        String::from("FluentUI App")
     }
     fn default_color() -> Color {
         Color::White
@@ -136,21 +180,10 @@ impl AppInner {
 
         deserializer.deserialize_map(TypetagObjects { _type: PhantomData })
     }
-}
-
-#[allow(dead_code)]
-impl AppHandler for AppInner {
-    #[allow(unused_variables)]
-    fn update(&mut self, update_args: AppUpdateArgs) {}
-
-    fn draw(&mut self, draw_args: AppDrawArgs) {
-        let canvas = draw_args.canvas;
+    fn draw(&mut self, canvas: &mut Canvas) {
         canvas.clear(self.background_color.to_skcolor());
         for widget in self.widgets.iter_mut() {
             widget.draw(canvas);
         }
-    }
-    fn fatal_error(&mut self, error: &AppError) {
-        println!("{}", error);
     }
 }
