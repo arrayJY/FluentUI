@@ -2,7 +2,6 @@ use crate::color::Color;
 use crate::text::Text;
 use crate::widget::Widget;
 use skulpin::skia_safe::Canvas;
-use skulpin::skia_safe::Color4f;
 use skulpin::skia_safe::Paint;
 use typetag::serde::{Deserialize, Deserializer, Serialize};
 
@@ -46,7 +45,7 @@ impl Widget for Label {
         self.y
     }
     fn draw(&mut self, canvas: &mut Canvas) {
-        let painter = Paint::new(Color4f::from(self.color.to_skcolor()), None);
+        let painter = Paint::new(self.color.to_skcolor(), None);
         //draw_text_blob() origin from bottom-left
         canvas.draw_text_blob(
             self.text.text_blob(),

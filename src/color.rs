@@ -1,4 +1,5 @@
-use skulpin::skia_safe::Color as SkColor;
+use skulpin::skia_safe::Color4f as SkColor4f;
+use skulpin::skia_safe::colors;
 use std::convert::From;
 use std::str::FromStr;
 use std::string::String;
@@ -19,10 +20,10 @@ impl Color {
             Color::Black => "black",
         }
     }
-    pub fn to_skcolor(&self) -> SkColor {
+    pub fn to_skcolor(&self) -> SkColor4f {
         match *self {
-            Color::White => SkColor::WHITE,
-            Color::Black => SkColor::BLACK,
+            Color::White => colors::WHITE,
+            Color::Black => colors::BLACK,
         }
     }
 }
