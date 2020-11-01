@@ -14,7 +14,6 @@ pub struct Label {
     y: i32,
     #[serde(default = "default_text_color")]
     color: Color,
-    #[serde(deserialize_with = "text_from_str")]
     #[serde(default = "default_text")]
     text: Text,
 }
@@ -53,12 +52,4 @@ impl Widget for Label {
             &painter,
         );
     }
-}
-
-fn text_from_str<'de, D>(deserializer: D) -> Result<Text, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let s: String = Deserialize::deserialize(deserializer)?;
-    Ok(Text::new(&s[..]))
 }
